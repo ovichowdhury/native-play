@@ -15,11 +15,13 @@ import {
 
 import PlaceInput from './src/components/PlaceInput';
 import PlaceList from './src/components/PlaceList';
+import PlaceDetails from './src/components/PlaceDetails';
 import PlaceImage from './src/assets/place.jpg';
 
 const App = () => {
     
     const [places, setPlaces] = useState([]);
+    const [selectedPlace, setSelectedPlace] = useState(null);
 
     onPlaceAdd = (value) => {
         if(value.trim() === "") return;
@@ -30,6 +32,18 @@ const App = () => {
         setPlaces(places.filter((p, i) => {
             return p.key !== key;
         }));
+        setSelectedPlace(null);
+    }
+
+    onPlaceSelect = (key) => {
+        const sPlace = places.find((place) => {
+            return place.key === key
+        });
+        setSelectedPlace(sPlace);
+    }
+
+    onModalClose = () => {
+        setSelectedPlace(null);
     }
 
     
@@ -37,9 +51,10 @@ const App = () => {
     return (
         <>
             <View style={styles.container}>
+                <PlaceDetails selectedPlace={selectedPlace} onModalClose={onModalClose} onPlaceDelete={deletePlace}/>
                 <PlaceInput onPlaceAdd={onPlaceAdd}/>
                 {/* Place List */}
-                <PlaceList places={places} onItemPress={deletePlace}/>        
+                <PlaceList places={places} onItemPress={onPlaceSelect}/>        
 
             </View>
         </>
