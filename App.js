@@ -12,6 +12,8 @@ import {
     View
 } from 'react-native';
 
+import {useSelector, useDispatch} from 'react-redux';
+import {addPlace, deletePlace, selectPlace, deSelectPlace} from './src/store/actions/places.action';
 
 import PlaceInput from './src/components/PlaceInput';
 import PlaceList from './src/components/PlaceList';
@@ -19,31 +21,28 @@ import PlaceDetails from './src/components/PlaceDetails';
 import PlaceImage from './src/assets/place.jpg';
 
 const App = () => {
-    
-    const [places, setPlaces] = useState([]);
-    const [selectedPlace, setSelectedPlace] = useState(null);
+
+    const places = useSelector((store) => store.places.places);
+    const selectedPlace = useSelector((store) => store.places.selectedPlace);
+    const dispatch = useDispatch();
+
+    console.log(selectPlace);
 
     onPlaceAdd = (value) => {
         if(value.trim() === "") return;
-        setPlaces([...places, {key: Math.random().toString(), value: value, image: PlaceImage}]);
+        dispatch(addPlace(value, PlaceImage));
     }
 
-    deletePlace = (key) => {
-        setPlaces(places.filter((p, i) => {
-            return p.key !== key;
-        }));
-        setSelectedPlace(null);
+    onDeletePlace = (key) => {
+        dispatch(deletePlace(key));
     }
 
     onPlaceSelect = (key) => {
-        const sPlace = places.find((place) => {
-            return place.key === key
-        });
-        setSelectedPlace(sPlace);
+        dispatch(selectPlace(key));
     }
 
     onModalClose = () => {
-        setSelectedPlace(null);
+        dispatch(deSelectPlace())
     }
 
     
@@ -51,7 +50,7 @@ const App = () => {
     return (
         <>
             <View style={styles.container}>
-                <PlaceDetails selectedPlace={selectedPlace} onModalClose={onModalClose} onPlaceDelete={deletePlace}/>
+                <PlaceDetails selectedPlace={selectedPlace} onModalClose={onModalClose} onPlaceDelete={onDeletePlace}/>
                 <PlaceInput onPlaceAdd={onPlaceAdd}/>
                 {/* Place List */}
                 <PlaceList places={places} onItemPress={onPlaceSelect}/>        
