@@ -26,8 +26,6 @@ const App = () => {
     const selectedPlace = useSelector((store) => store.places.selectedPlace);
     const dispatch = useDispatch();
 
-    console.log(selectPlace);
-
     onPlaceAdd = (value) => {
         if(value.trim() === "") return;
         dispatch(addPlace(value, PlaceImage));
